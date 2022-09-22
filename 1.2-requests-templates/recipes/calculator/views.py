@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 
 DATA = {
     'omlet': {
@@ -19,12 +20,49 @@ DATA = {
     # можете добавить свои рецепты ;)
 }
 
-# Напишите ваш обработчик. Используйте DATA как источник данных
-# Результат - render(request, 'calculator/index.html', context)
-# В качестве контекста должен быть передан словарь с рецептом:
-# context = {
-#   'recipe': {
-#     'ингредиент1': количество1,
-#     'ингредиент2': количество2,
-#   }
-# }
+
+def omlet_view(request):
+    template_name = 'calculator/index.html'
+    recipe = DATA.get('omlet')
+    servings = request.GET.get('servings')
+
+    temp_recipe = recipe.copy()
+    if servings:
+        servings = int(servings)
+        for item in temp_recipe:
+            temp_recipe[item] = temp_recipe.get(item) * servings
+
+    context = {'recipe': temp_recipe}
+    return render(request, template_name, context)
+
+
+def pasta_view(request):
+    template_name = 'calculator/index.html'
+    recipe = DATA.get('pasta')
+    servings = request.GET.get('servings')
+
+    temp_recipe = recipe.copy()
+    if servings:
+        servings = int(servings)
+        for item in temp_recipe:
+            temp_recipe[item] = temp_recipe.get(item) * servings
+
+    context = {'recipe': temp_recipe}
+    return render(request, template_name, context)
+
+
+def buter_view(request):
+    template_name = 'calculator/index.html'
+    recipe = DATA.get('buter')
+    servings = request.GET.get('servings')
+
+    temp_recipe = recipe.copy()
+    if servings:
+        servings = int(servings)
+        for item in temp_recipe:
+            temp_recipe[item] = temp_recipe.get(item) * servings
+
+    context = {'recipe': temp_recipe}
+    return render(request, template_name, context)
+
+
