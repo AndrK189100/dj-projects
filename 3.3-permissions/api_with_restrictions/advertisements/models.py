@@ -28,3 +28,8 @@ class Advertisement(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
+
+
+class AdvFavorite(models.Model):
+    advertisements = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='advertisement')
+    fv_users = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='fv_user')

@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
-from advertisements.models import Advertisement
+from advertisements.models import Advertisement, AdvFavorite
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,7 +24,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertisement
         fields = ('id', 'title', 'description', 'creator',
-                  'status', 'created_at', )
+                  'status', 'created_at',)
 
     def create(self, validated_data):
         """Метод для создания"""
@@ -42,4 +43,26 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
         # TODO: добавьте требуемую валидацию
 
+        if self.context['view'].action in ['update', 'partial_update'] and 'status' in data \
+                and data['status'] == 'OPEN':
+
+            adv_status = Advertisement.objects.get(pk=self.context['view'].kwargs['pk']).status
+            if adv_status == 'CLOSED':
+                query = Advertisement.objects.filter(creator=self.context['request'].user, status='OPEN').count()
+                if query >= 3:
+                    raise ValidationError('To many OPEN advertisements')
+
+        elif self.context['view'].action == 'create' and ('status' not in data or data['status'] == 'OPEN'):
+            query = Advertisement.objects.filter(creator=self.context['request'].user, status='OPEN').count()
+            if query >= 3:
+                raise ValidationError('To many OPEN advertisements')
+
         return data
+
+
+class AdvFavoriteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AdvFavorite
+        fields = ['fv_users', 'advertisements']
+
