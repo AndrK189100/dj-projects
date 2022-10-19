@@ -59,10 +59,18 @@ class AdvertisementViewSet(ModelViewSet):
             if AdvFavorite.objects.filter(fv_users=user, advertisements=int(pk)):
                 raise ValidationError('has already')
 
-            if Advertisement.objects.get(creator=user, pk=pk):
+            if Advertisement.objects.filter(creator=user, pk=int(pk)):
+
                 raise ValidationError('You are owner)')
 
             serializer.save()
             return Response({'status': 'OK'})
         else:
             raise ValidationError('No found')
+
+    @action(detail=False)
+    def get_favorite(self, request, pk=None):
+        user = request.user.id
+        fv_advs = AdvFavorite.objects.filter(fv_users=user)
+        serializer = AdvFavoriteSerializer(fv_advs, many=True)
+        return Response(serializer.data)

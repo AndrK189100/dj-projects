@@ -62,7 +62,10 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
 class AdvFavoriteSerializer(serializers.ModelSerializer):
 
+    title = serializers.ReadOnlyField(source='advertisements.title')
+    description = serializers.ReadOnlyField(source='advertisements.description')
+    creator = serializers.ReadOnlyField(source='advertisements.creator.first_name')
     class Meta:
         model = AdvFavorite
-        fields = ['fv_users', 'advertisements']
+        fields = ['fv_users', 'advertisements', 'title', 'description', 'creator']
 
