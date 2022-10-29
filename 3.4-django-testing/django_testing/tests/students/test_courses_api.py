@@ -32,6 +32,7 @@ def courses_factory():
 def test_get_courses(client, courses_factory):
     courses_count = Course.objects.count()
     courses_factory(_quantity=10)
+    # url = reverse('courses')
     response = client.get('/api/v1/courses/')
     data = response.json()
 
