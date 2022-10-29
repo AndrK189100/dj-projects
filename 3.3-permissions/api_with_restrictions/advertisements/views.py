@@ -60,7 +60,6 @@ class AdvertisementViewSet(ModelViewSet):
                 raise ValidationError('has already')
 
             if Advertisement.objects.filter(creator=user, pk=int(pk)):
-
                 raise ValidationError('You are owner)')
 
             serializer.save()
